@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to fetch weather data by coordinates
   function fetchWeatherDataByCoords(lat, lon) {
     const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`; // API URL for fetching current weather data by coordinates
-
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`; // API URL for fetching forecast data by coordinates
+    
     fetch(currentWeatherUrl)
       .then(response => {
         if (!response.ok) { // Check if the response is OK
@@ -70,6 +71,21 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => {
         console.error('Error fetching current weather data:', error); // Log the error
         alert('Failed to fetch current weather data'); // Alert if there is an error fetching data
+      });
+
+      fetch(forecastUrl)
+      .then(response => {
+        if (!response.ok) { // Check if the response is OK
+          throw new Error(`HTTP error! status: ${response.status}`); // Throw an error if the response is not OK
+        }
+        return response.json(); // Parse the response as JSON
+      })
+      .then(data => {
+        console.log('Forecast data:', data); // Log the received data
+      })
+      .catch(error => {
+        console.error('Error fetching forecast data:', error); // Log the error
+        alert('Failed to fetch forecast data'); // Alert if there is an error fetching data
       });
   }
   
