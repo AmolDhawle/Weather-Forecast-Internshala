@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function fetchWeatherDataByCoords(lat, lon) {
     const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`; // API URL for fetching current weather data by coordinates
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`; // API URL for fetching forecast data by coordinates
-    
+
     fetch(currentWeatherUrl)
       .then(response => {
         if (!response.ok) { // Check if the response is OK
@@ -67,13 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(data => {
         console.log('Current weather data:', data); // Log the received data
+        displayCurrentWeather(data); // Display the current weather data
       })
       .catch(error => {
         console.error('Error fetching current weather data:', error); // Log the error
         alert('Failed to fetch current weather data'); // Alert if there is an error fetching data
       });
 
-      fetch(forecastUrl)
+    fetch(forecastUrl)
       .then(response => {
         if (!response.ok) { // Check if the response is OK
           throw new Error(`HTTP error! status: ${response.status}`); // Throw an error if the response is not OK
@@ -88,6 +89,34 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Failed to fetch forecast data'); // Alert if there is an error fetching data
       });
   }
+
+  // Function to display the current weather data
+  function displayCurrentWeather(data) {
+    if (!data || !data.weather || data.weather.length === 0) { // Check if the data is valid
+      console.error('Current weather data is missing or malformed:', data); // Log an error if the data is invalid
+      alert('Failed to fetch current weather data'); // Alert if the data is invalid
+      return;
+    }
+
+    const weatherDataDiv = document.getElementById('weather-data'); // Get the element to display the weather data
+    const currentDate = new Date(); // Get the current date
+    const formattedDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`; // Format the current date
+    weatherDataDiv.innerHTML = `
+      <div class="flex items-center">
+        <div class="flex flex-col">
+          <h2 class="text-2xl font-bold">${data.name}</h2>
+          <p class="text-lg">${formattedDate}</p> <!-- Display the formatted current date -->
+          <p class="text-lg">${data.weather[0].description}</p>
+          <p class="text-lg">Temperature: ${data.main.temp} °C</p>
+          <p class="text-lg">Feels Like: ${data.main.feels_like} °C</p>
+          <p class="text-lg">Humidity: ${data.main.humidity} %</p>
+          <p class="text-lg">Wind Speed: ${data.wind.speed} m/s</p>
+        </div>
+        <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="${data.weather[0].description}" class="w-20 h-20 ml-4">
+      </div>
+    `;
+  }
+
   
 })
 
