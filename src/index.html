@@ -6,14 +6,32 @@
   <title>Weather Forecast</title>
   <link href="/dist/output.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-blue-300">
   <header>
-    <h1 class="p-14 bg-green-400 text-white text-center text-5xl font-bold">
+    <h1 class="p-8 bg-green-400 text-white text-center text-5xl font-bold">
       Weather Forecast
     </h1>
   </header>
-  <main>
-
+  <main class="flex gap-4">
+    <section class="flex mt-5">
+      <div class="flex flex-col m-5 mb-4 gap-3">
+        <label for="city-input" class="text-xl font-bold">Enter a City Name</label>
+        <input id="city-input" type="text" placeholder="Enter city name" class="w-96 rounded-md p-4 mb-4">
+        <button id="search-btn" class="bg-blue-700 text-white p-4 rounded-md">Search</button>
+        <span class="inline-flex gap-4">
+          <hr class="w-40 mt-3">
+            OR
+          <hr class="w-40 mt-3">
+        </span>
+        <button id="search-btn" class="bg-red-700 text-white p-4 rounded-md">Use Current Location</button>
+      </div>
+    </section>
+    <section class="flex mt-5">
+      <!-- The fetched data should be shown here s -->
+      <div id="weather-data" class="text-center"></div>
+      <div id="extended-forecast" class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"></div>
+  </div>
+    </section>
   </main>
 </body>
 </html>
