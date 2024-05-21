@@ -23,15 +23,13 @@
             OR
           <hr class="w-40 mt-3">
         </span>
-        <button id="search-btn" class="bg-red-700 text-white p-4 rounded-md">Use Current Location</button>
+        <button id="current-location-btn" class="bg-red-700 text-white p-4 rounded-md">Use Current Location</button>
       </div>
     </section>
-    <section class="flex mt-5">
-      <!-- The fetched data should be shown here s -->
-      <div id="weather-data" class="text-center"></div>
-      <div id="extended-forecast" class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"></div>
-  </div>
+    <section class="flex mt-5" id="weather-data">
+      <div class="flex mt-5" id="extended-forecast"></div>
     </section>
   </main>
+  <script src="app.js"></script>
 </body>
 </html>
