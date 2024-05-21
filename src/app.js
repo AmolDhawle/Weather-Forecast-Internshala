@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(data => {
         console.log('Forecast data:', data); // Log the received data
+        displayExtendedForecast(data.list); // Display the extended forecast data
       })
       .catch(error => {
         console.error('Error fetching forecast data:', error); // Log the error
@@ -117,8 +118,26 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  
-})
+  // Function to display the extended forecast data
+  function displayExtendedForecast(forecastList) {
+    if (!forecastList || forecastList.length === 0) { // Check if the data is valid
+      console.error('Extended forecast data is missing or malformed:', forecastList); // Log an error if the data is invalid
+      alert('Failed to fetch extended forecast data'); // Alert if the data is invalid
+      return;
+    }
+
+    const forecastDiv = document.getElementById('extended-forecast'); // Get the element to display the forecast data
+    forecastDiv.innerHTML = forecastList.filter((_, index) => index % 5 === 0).slice(1, 8).map(day => `
+      <div class="bg-gray-500 p-4 rounded-lg shadow-md text-center">
+        <h3 class="text-xl font-bold">${new Date(day.dt * 1000).toLocaleDateString()}</h3>
+        <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="${day.weather[0].description}" class="mx-auto">
+        <p class="text-lg">Temp: ${day.main.temp} °C</p>
+        <p class="text-lg">Wind: ${day.wind.speed} m/s</p>
+        <p class="text-lg">Humidity: ${day.main.humidity} %</p>
+      </div>
+    `).join(''); // Populate the element with the forecast data
+  }
+});
 
 
 
