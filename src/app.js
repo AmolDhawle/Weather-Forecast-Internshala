@@ -1,20 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-  const apiKey = 'e5103872dfd9472df7a1fd116bcf67b8'; 
+  const apiKey = 'e5103872dfd9472df7a1fd116bcf67b8';
 
   document.getElementById('search-btn').addEventListener('click', handleCitySearch);
   document.getElementById('current-location-btn').addEventListener('click', getCurrentLocationWeather);
+  document.getElementById('city-input').addEventListener('focus', displayRecentSearches);
 
   function handleCitySearch() {
     const city = document.getElementById('city-input').value.trim(); // Get the city name from the input
     if (city) {
+      saveRecentSearch(city);
       fetchWeatherDataByCity(city); // Fetch weather data by city if the input is not empty
     } else {
       alert('Please enter a valid city name'); // Alert if the input is empty
     }
   }
 
-  // Function to get weather data based on the user's current location
   function getCurrentLocationWeather() {
     if (navigator.geolocation) { // Check if geolocation is supported by the browser
       navigator.geolocation.getCurrentPosition(position => {
@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Function to fetch weather data by city name
   function fetchWeatherDataByCity(city) {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`; // API URL for fetching current weather data by city
     fetch(url)
@@ -39,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json(); // Parse the response as JSON
       })
       .then(data => {
-        console.log('Current weather data:', data); // Log the received data
         if (data.cod === 200) { // Check if the response code is 200 (success)
           const { coord } = data; // Get coordinates from the response data
           fetchWeatherDataByCoords(coord.lat, coord.lon); // Fetch weather data by coordinates
@@ -48,12 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
       .catch(error => {
-        console.error('Error fetching data:', error); // Log the error
         alert('Failed to fetch weather data'); // Alert if there is an error fetching data
       });
   }
 
-  // Function to fetch weather data by coordinates
   function fetchWeatherDataByCoords(lat, lon) {
     const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`; // API URL for fetching current weather data by coordinates
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`; // API URL for fetching forecast data by coordinates
@@ -66,11 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json(); // Parse the response as JSON
       })
       .then(data => {
-        console.log('Current weather data:', data); // Log the received data
         displayCurrentWeather(data); // Display the current weather data
       })
       .catch(error => {
-        console.error('Error fetching current weather data:', error); // Log the error
         alert('Failed to fetch current weather data'); // Alert if there is an error fetching data
       });
 
@@ -82,62 +76,94 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json(); // Parse the response as JSON
       })
       .then(data => {
-        console.log('Forecast data:', data); // Log the received data
         displayExtendedForecast(data.list); // Display the extended forecast data
       })
       .catch(error => {
-        console.error('Error fetching forecast data:', error); // Log the error
         alert('Failed to fetch forecast data'); // Alert if there is an error fetching data
       });
   }
 
-  // Function to display the current weather data
   function displayCurrentWeather(data) {
     if (!data || !data.weather || data.weather.length === 0) { // Check if the data is valid
-      console.error('Current weather data is missing or malformed:', data); // Log an error if the data is invalid
       alert('Failed to fetch current weather data'); // Alert if the data is invalid
       return;
     }
 
     const weatherDataDiv = document.getElementById('weather-data'); // Get the element to display the weather data
+    const weatherSection = document.getElementById('weather-section');
+    weatherSection.classList.remove('hidden');
     const currentDate = new Date(); // Get the current date
     const formattedDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`; // Format the current date
     weatherDataDiv.innerHTML = `
-      <div class="flex items-center">
-        <div class="flex flex-col">
-          <h2 class="text-2xl font-bold">${data.name}</h2>
-          <p class="text-lg">${formattedDate}</p> <!-- Display the formatted current date -->
-          <p class="text-lg">${data.weather[0].description}</p>
-          <p class="text-lg">Temperature: ${data.main.temp} °C</p>
-          <p class="text-lg">Feels Like: ${data.main.feels_like} °C</p>
-          <p class="text-lg">Humidity: ${data.main.humidity} %</p>
-          <p class="text-lg">Wind Speed: ${data.wind.speed} m/s</p>
+      <div class=" flex items-center justify-between w-full text-white">
+        <div class="flex flex-col justify-center gap-2">
+          <div class="flex gap-4">
+            <h2 class="text-xl md:text-2xl lg:text-4xl font-bold mb-4">${data.name}</h2>
+            <h3 class="text-xl md:text-2xl lg:text-4xl font-bold mb-4">(${formattedDate})</h3>
+          </div>
+          <p class="text-lg md:text-xl lg:text-2xl">Temperature: ${data.main.temp} °C</p>
+          <p class="text-lg md:text-xl lg:text-2xl">Feels Like: ${data.main.feels_like} °C</p>
+          <p class="text-lg md:text-xl lg:text-2xl">Humidity: ${data.main.humidity} %</p>
+          <p class="text-lg md:text-xl lg:text-2xl">Wind Speed: ${data.wind.speed} m/s</p>
         </div>
-        <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="${data.weather[0].description}" class="w-20 h-20 ml-4">
+        <div class="flex flex-col">
+          <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="${data.weather[0].description}" class="w-20 h-20 ml-4">
+          <p class="text-xl md:text-2xl font-bold">${data.weather[0].description}</p>
+        </div>
       </div>
     `;
   }
 
-  // Function to display the extended forecast data
   function displayExtendedForecast(forecastList) {
     if (!forecastList || forecastList.length === 0) { // Check if the data is valid
-      console.error('Extended forecast data is missing or malformed:', forecastList); // Log an error if the data is invalid
       alert('Failed to fetch extended forecast data'); // Alert if the data is invalid
       return;
     }
 
     const forecastDiv = document.getElementById('extended-forecast'); // Get the element to display the forecast data
-    forecastDiv.innerHTML = forecastList.filter((_, index) => index % 5 === 0).slice(1, 8).map(day => `
-      <div class="bg-gray-500 p-4 rounded-lg shadow-md text-center">
+    forecastDiv.innerHTML = forecastList.filter((_, index) => index % 8 === 0).slice(0, 7).map(day => `
+      <div class="bg-slate-600s text-white p-2 lg:p-4 rounded-lg shadow-md text-center h-1 md:h-3">
         <h3 class="text-xl font-bold">${new Date(day.dt * 1000).toLocaleDateString()}</h3>
-        <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="${day.weather[0].description}" class="mx-auto">
-        <p class="text-lg">Temp: ${day.main.temp} °C</p>
-        <p class="text-lg">Wind: ${day.wind.speed} m/s</p>
-        <p class="text-lg">Humidity: ${day.main.humidity} %</p>
+        <div class="flex justify-center pl-20">
+          <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="${day.weather[0].description}" class="w-20 h-20">
+        </div>
+        <p class="text-lg lg:text-xl">Temp: ${day.main.temp} °C</p>
+        <p class="text-lg lg:text-xl">Wind: ${day.wind.speed} m/s</p>
+        <p class="text-lg lg:text-xl">Humidity: ${day.main.humidity} %</p>
       </div>
     `).join(''); // Populate the element with the forecast data
   }
+
+  function saveRecentSearch(city) {
+    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    recentSearches = recentSearches.filter(search => search.toLowerCase() !== city.toLowerCase()); // Remove duplicates
+    recentSearches.unshift(city); // Add the new search to the beginning
+    if (recentSearches.length > 5) recentSearches.pop(); // Limit to 5 recent searches
+    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+  }
+
+  function displayRecentSearches() {
+    const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    const recentSearchesDropdown = document.getElementById('recent-searches-dropdown');
+    if (recentSearches.length > 0) {
+      recentSearchesDropdown.innerHTML = recentSearches.map(city => `
+        <option value="${city}">${city}</option>
+      `).join('');
+      recentSearchesDropdown.size = recentSearches.length; // Adjust the dropdown size based on the number of items
+      recentSearchesDropdown.classList.remove('hidden'); // Show the dropdown
+    } else {
+      recentSearchesDropdown.classList.add('hidden'); // Hide the dropdown if no recent searches
+    }
+  }
+
+  document.getElementById('city-input').addEventListener('blur', () => {
+    setTimeout(() => {
+      document.getElementById('recent-searches-dropdown').classList.add('hidden');
+    }, 200); // Delay hiding to allow click event on dropdown
+  });
+
+  document.getElementById('recent-searches-dropdown').addEventListener('change', (event) => {
+    document.getElementById('city-input').value = event.target.value; // Set the input value to the selected city
+    document.getElementById('recent-searches-dropdown').classList.add('hidden'); // Hide the dropdown
+  });
 });
-
-
-

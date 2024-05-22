@@ -7,36 +7,37 @@
   <link href="/dist/output.css" rel="stylesheet">
 </head>
 <body class="bg-blue-300">
-  <header>
-    <h1 class="p-8 bg-green-400 text-white text-center text-5xl font-bold">
+  <header class="w-full">
+    <h1 class="p-4 text-xl md:text-2xl lg:text-5xl md:p-6 lg:p-8 bg-blue-500 text-white text-center font-bold">
       Weather Forecast
     </h1>
   </header>
-  <main class="flex gap-4">
-    <section class="flex mt-5">
-      <div class="flex flex-col m-5 mb-4 gap-3">
-        <label for="city-input" class="text-xl font-bold">Enter a City Name</label>
-        <input id="city-input" type="text" placeholder="Enter city name" class="w-96 rounded-md p-4 mb-4">
-        <button id="search-btn" class="bg-blue-700 text-white p-4 rounded-md">Search</button>
-        <span class="inline-flex gap-4">
-          <hr class="w-40 mt-3">
+  <main class="flex flex-col lg:flex-row gap-4 m-5">
+    <section class="flex m-2 lg:m-5 justify-center lg:justify-normal items-center lg:items-start">
+      <div class="flex flex-col">
+        <label for="city-input" class="text-xl  md:text-2xl lg:text-4xl font-bold mb-2 md:mb-4">Enter a City Name</label>
+        <input id="city-input" type="text" placeholder="Enter city name" class="w-80 md:w-96 rounded-md p-2 md:p-3 lg:p-4">
+        <select id="recent-searches-dropdown" class="hidden w-80 md:w-96 rounded-md p-2"></select>
+        <button id="search-btn" class="bg-blue-700 text-white p-2 md:p-3 lg:p-4 rounded-md mt-5 lg:mt-10 w-80 md:w-96">Search</button>
+        <span class="inline-flex gap-4 mt-3 lg:mt-5">
+          <hr class="w-32 md:w-40 mt-3 text-black">
             OR
-          <hr class="w-40 mt-3">
+          <hr class="w-32 md:w-40 mt-3">
         </span>
-        <button id="current-location-btn" class="bg-red-700 text-white p-4 rounded-md">Use Current Location</button>
+        <button id="current-location-btn" class="bg-red-700 text-white p-2 md:p-3 lg:p-4 rounded-md mt-2 lg:mt-5 w-80 md:w-96">Use Current Location</button>
       </div>
     </section>
-    <section class="mt-12 w-full flex flex-col gap-4">
+    <section id="weather-section" class="mt-4 lg:mt-8 w-full flex flex-col gap-4 hidden">
       <!-- Current weather data -->
-      <div id="weather-data" class="w-full flex justify-between bg-blue-400 p-6 rounded-lg shadow-md">
-        <!-- Weather details go here -->
+      <div id="weather-data" class="w-full flex justify-between items-center bg-blue-500  p-4 lg:p-6 rounded-lg shadow-md mb-4">
       </div>
 
+      <h1 class="text-4xl font-bold">5 - Day Forecast</h1>
+
       <!-- Extended forecast -->
-      <div id="extended-forecast" class=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <!-- Forecast cards go here -->
+      <div id="extended-forecast" class="grid grid-cols-1 md:grid-cols-5 gap-2 lg:gap-4 ">
       </div>
-    </section>  
+    </section>
   </main>
   <script src="app.js"></script>
 </body>
