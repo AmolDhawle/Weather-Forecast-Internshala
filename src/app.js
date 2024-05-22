@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const forecastDiv = document.getElementById('extended-forecast'); // Get the element to display the forecast data
     forecastDiv.innerHTML = forecastList.filter((_, index) => index % 8 === 0).slice(0, 7).map(day => `
-      <div class="bg-slate-600s text-white p-2 lg:p-4 rounded-lg shadow-md text-center h-1 md:h-3">
+      <div class="bg-slate-600 text-white p-2 lg:p-4 rounded-lg shadow-md text-center h-1 md:h-3">
         <h3 class="text-xl font-bold">${new Date(day.dt * 1000).toLocaleDateString()}</h3>
         <div class="flex justify-center pl-20">
           <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="${day.weather[0].description}" class="w-20 h-20">
